@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-private xmlns="http://www.netbeans.org/ns/project-private/1">
+    <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
+    <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+        <group>
+            <file>file:/home/daniel/Uni/ThirdYear/AI2/A3/Clustering/Clusterer/Clusterer/src/clusterer/ClusteringAlgorithm.java</file>
+            <file>file:/home/daniel/Uni/ThirdYear/AI2/A3/Clustering/Clusterer/Clusterer/src/clusterer/KMeans.java</file>
+            <file>file:/home/daniel/Uni/ThirdYear/AI2/A3/Clustering/Clusterer/Clusterer/src/clusterer/LeaderFollower.java</file>
+            <file>file:/home/daniel/Uni/ThirdYear/AI2/A3/Clustering/Clusterer/Clusterer/src/clusterer/Kohonen.java</file>
+            <file>file:/home/daniel/Uni/ThirdYear/AI2/A3/Clustering/Clusterer/Clusterer/src/clusterer/RunClustering.java</file>
+        </group>
+    </open-files>
+</project-private>
