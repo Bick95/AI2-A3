@@ -125,7 +125,7 @@ public class KMeans extends ClusteringAlgorithm
                 
             }
             
-            if (cl.currentMembers.size() != 0)
+            if (cl.currentMembers.size() != 0) /// Avoid 0-divide
                 for (int i = 0; i < dim; i++){
                     average[i] = average[i] / (float) cl.currentMembers.size();
                 }
