@@ -54,45 +54,44 @@ public class KMeans extends ClusteringAlgorithm
 		this.trainData = trainData;
 		this.testData = testData; 
 		this.dim = dim;
-		prefetchThreshold = 0.5;
+		this.prefetchThreshold = 0.5;
 
 		stopCriterion = false;
-		clusterMembership = new int[trainData.size()];
+		clusterMembership = new int[trainData.size()]; /// Contains cluster-indx if which a client was member i previous round
+                
 		// Here k new cluster are initialized
 		clusters = new Cluster[k];
 		for (int ic = 0; ic < k; ic++)
 			clusters[ic] = new Cluster();
 	}
-
-
-        private boolean differenceDetected(){
-            return !stopCriterion;
-        }
         
         private void generateNewPartitioning(){
             for (Cluster cl : clusters){ /// Update previous members and prepare for new set of current members
                 cl.previousMembers = cl.currentMembers;
                 cl.currentMembers = new HashSet<Integer>();
             }
+            
             int i = 0;
-            stopCriterion = true;
+            stopCriterion = true; /// Keep only going on if there is some change(s)
             float sumDistances = 0;
             System.out.println("traindata length is " + trainData.size());
+            
             for (float[] member : trainData){
-
-                /// Prepare array of distances
-
+                
                 /// Compute distance to each cluster-centroid and find smallest
                 float distance = 0;
                 int bestCentroid = 0;
                 float bestDistance = 9999999;
+                
                 for (int cl = 0; cl < k; cl++){ /// For each cluster
-                    //System.out.println("cl length is " + k);
+                    /// Calculate Euclidean distance from client to centroid
                     for (int feature = 0; feature < dim; feature++){ /// For each feature in training data
 
                         distance += (float) Math.pow((member[feature] - clusters[cl].prototype[feature]), 2);
                     }
-                    /// Find smallest distance
+                    distance = (float) Math.sqrt(distance);
+                    
+                    /// Find smallest distance from member to a centroid
                     if (distance < bestDistance){
                         bestDistance = distance;
                         bestCentroid = cl;
@@ -105,44 +104,45 @@ public class KMeans extends ClusteringAlgorithm
                 }
                 clusterMembership[i] = bestCentroid;
                 clusters[bestCentroid].currentMembers.add(i++);
-
-
             }
-            System.out.println("sum distance is " + sumDistances);
+            System.out.println("sum distance is " + sumDistances + " and i: " + i);
         }
         
         
         private void computePrototype(Cluster cl){
-            System.err.println("Computing prototype...");
-            float[] average = null;
-
-            average = new float[dim];
-            Arrays.fill(average, 0f);
-            System.err.println("Array initialized to have " + dim + " spaces.");
-
+            System.out.println("Computing prototype...");
             
-            //int i = 0; i < cl.currentMembers.size(); i++
+            float[] average = new float[dim];
+            Arrays.fill(average, 0f);
+            
+            System.out.println("Array initialized to have " + dim + " spaces.");
+
             for (Integer idx : cl.currentMembers){ /// Iterate through all clients of the cluster
-                for (int feature = 0; feature < trainData.get(0).length; feature++){ /// Iterate through all features per client
-                    average[feature]  += ((float) trainData.get(idx.intValue())[feature] ); /// "/ (float) cl.currentMembers.size()" lead to rounding errors
+                
+                for (int feature = 0; feature < dim; feature++){ /// Iterate through all features per client
+                    average[feature]  += ( (float) trainData.get(idx.intValue())[feature] ); /// "/ (float) cl.currentMembers.size()" lead to rounding errors
                 }
+                
             }
-            for (int i = 0; i < average.length; i++){
-                average[i] = average[i] / (float) cl.currentMembers.size();
-            }
+            
+            if (cl.currentMembers.size() != 0)
+                for (int i = 0; i < dim; i++){
+                    average[i] = average[i] / (float) cl.currentMembers.size();
+                }
+            
             cl.prototype = average;
         }
         
         private void computePrototypes(){
             /// For each cluster, compute prototype
-            for (int i = 0; i < clusters.length; i++)
+            for (int i = 0; i < clusters.length; i++){
                 computePrototype(clusters[i]);
+            }
         }
         
         private void initialPartitioning(){
             Random rn = new Random();
             int idx = 0;
-            System.err.println("k: " + k);
             
             /// Random partitionng
             for (int i = 0; i < trainData.size(); i++){ /// Assign every client to a cluster
@@ -151,42 +151,24 @@ public class KMeans extends ClusteringAlgorithm
                 clusterMembership[i] = idx;
             }
             
-            /// Print
-            System.err.println("Cluster sizes:");
-            for (int i = 0; i < clusters.length; i++)
-                //System.out.println(i + ": " + clusters[i].currentMembers.size());
-            
+            /// Printing...
+            showMembers();
+                
             /// Compute initial prototypes
             computePrototypes();
             
             /// Print
-            System.err.println("Prototypes:");
-            for (int i = 0; i < clusters.length; i++){
-                //System.out.println("Cluster: " + i + " prototype: ");
-                for (int ii = 0; ii < clusters[i].prototype.length; ii++) {
-                    //System.out.print(clusters[i].prototype[ii] + "  ");
-                    //System.out.println("\n");
-                }
-            }
+            //System.err.println("Prototypes:");
+            //showPrototypes();
         }
         
 	public boolean train()
 	{
-            /// Get overview over data
-            for (int i = 0; i < trainData.size(); i++){
-                //System.out.println(i + ": " + (float[]) trainData.get(i) + "Size: " + ((float[]) trainData.get(i)).length);
-                float[] featureVector = (float[]) trainData.get(i);
-                for (int ii = 0; ii < featureVector.length; ii++){
-                    //System.out.print((float) featureVector[ii] + " ");
-                }
-                //System.out.println("\n");
-            }
-            
             //implement k-means algorithm here:
             // Step 1: Select an initial random partioning with k clusters
             initialPartitioning();
             
-            while (differenceDetected()){
+            while (!stopCriterion){
                 // Step 2: Generate a new partition by assigning each datapoint to its closest cluster center
                 generateNewPartitioning();
                 
@@ -196,50 +178,66 @@ public class KMeans extends ClusteringAlgorithm
 		// Step 4: repeat until clustermembership stabilizes
             }
 		
-		return false;
+            return false;
 	}
 
 	public boolean test()
 	{
-		// iterate along all clients. Assumption: the same clients are in the same order as in the testData
-		// for each client find the cluster of which it is a member
-		// get the actual testData (the vector) of this client
-		// iterate along all dimensions
-		// and count prefetched htmls
-		// count number of hits
-		// count number of requests
-		// set the global variables hitrate and accuracy to their appropriate value
-		return true;
+            int ctrPrefetched = 0;
+            int ctrHits = 0;
+            int ctrRequests = 0;
+            // iterate along all clients. Assumption: the same clients are in the same order as in the testData
+            for (int member = 0; member < testData.size(); member++){
+                for (int feature = 0; feature < dim; feature++){ // iterate along all dimensions
+                    
+                    int cluster = clusterMembership[member]; // for each client find the cluster of which it is a member
+                    boolean prefetched = (clusters[cluster].prototype[feature] > prefetchThreshold ? true : false);
+                    boolean requested = (testData.get(member)[feature] == (float)1 ? true : false); // get the actual testData (the vector) of this client
+                    
+                    if (prefetched){        /// A website is prefetched
+                        if (requested){     /// A website is prefetched AND requested by the user
+                            ctrHits++;      // count number of hits
+                        }
+                        ctrPrefetched++;    // and count prefetched htmls
+                    }
+                    ctrRequests++;          // count number of requests
+                }
+            }
+            System.out.println("ctrRequests: " + ctrRequests + " ctrHits: " + ctrHits + " ctrPrefetched: " + ctrPrefetched);
+            // set the global variables hitrate and accuracy to their appropriate value
+            this.hitrate = (double) ((double) ctrHits / (double) ctrRequests);
+            this.accuracy = (double) ((double) ctrHits / (double) ctrPrefetched);
+		
+            return true;
 	}
 
 
 	// The following members are called by RunClustering, in order to present information to the user
 	public void showTest()
 	{
-		//System.out.println("Prefetch threshold=" + this.prefetchThreshold);
-		//System.out.println("Hitrate: " + this.hitrate);
-		//System.out.println("Accuracy: " + this.accuracy);
-		//System.out.println("Hitrate+Accuracy=" + (this.hitrate + this.accuracy));
+		System.out.println("Prefetch threshold=" + this.prefetchThreshold);
+		System.out.println("Hitrate: " + this.hitrate);
+		System.out.println("Accuracy: " + this.accuracy);
+		System.out.println("Hitrate+Accuracy=" + (this.hitrate + this.accuracy));
 	}
 	
 	public void showMembers()
 	{
-		for (int i = 0; i < k; i++) {
-            //System.out.println("\nMembers cluster["+i+"] :" + clusters[i].currentMembers);
-        }
+            for (int i = 0; i < k; i++) {
+                System.out.println("\nMembers cluster["+i+"] :" + clusters[i].currentMembers);
+            }
 	}
 	
 	public void showPrototypes()
 	{
 		for (int ic = 0; ic < k; ic++) {
-			//System.out.print("\nPrototype cluster["+ic+"] :");
+                    System.out.print("\nPrototype cluster["+ic+"] :");
 			
-			for (int ip = 0; ip < dim; ip++) {
-                //System.out.print(clusters[ic].prototype[ip] + " ");
-
-                //System.out.println();
-            }
-		 }
+                    for (int ip = 0; ip < dim; ip++) {
+                        System.out.print(clusters[ic].prototype[ip] + " ");
+                        System.out.println();
+                    }
+		}
 	}
 
 	// With this function you can set the prefetch threshold.

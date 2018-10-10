@@ -37,12 +37,12 @@ public class RunClustering
                     args[3] = "/home/daniel/Uni/ThirdYear/AI2/A3/Data/webuser-clustering/clients.dat";
                     readData(args[0],args[1],args[2],args[3]);
 		} else if (System.getProperties().get("user.name").equals("Bálint")){
-			args = new String[4];
-			args[0] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/train.dat";
-			args[1] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/test.dat";
-			args[2] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/requests.dat";
-			args[3] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/clients.dat";
-			readData(args[0],args[1],args[2],args[3]);
+                    args = new String[4];
+                    args[0] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/train.dat";
+                    args[1] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/test.dat";
+                    args[2] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/requests.dat";
+                    args[3] = "C:\\Users\\Bálint\\Desktop\\Bálint\\RUG\\3A\\AI2\\AI2-A3\\data/clients.dat";
+                    readData(args[0],args[1],args[2],args[3]);
 
 		}else {
 			System.out.println("No files where defined (java runClustering [traindata, testdata, requests, clients]), using defaults");
