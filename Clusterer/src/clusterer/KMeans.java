@@ -56,13 +56,123 @@ public class KMeans extends ClusteringAlgorithm
 	}
 
 
+        private boolean differenceDetected(){
+            /// TODO: NEEDS IMPLEMENTATION
+            System.err.println("differenceDetected() still needs implementation!");
+            return false;
+        }
+        
+        private void generateNewPartitioning(){
+            for (Cluster cl : clusters){ /// Update previous members and prepare for new set of current members
+                cl.previousMembers = cl.currentMembers;
+                cl.currentMembers = new HashSet<Integer>();
+            }
+            
+            for (float[] member : trainData){
+                /// Prepare array of distances
+                float[] distances = new float[k];
+                Arrays.fill(distances, 0f);
+                
+                /// Compute distance to each cluster-centroid
+                for (int cl = 0; cl < k; cl++){ /// For each cluster
+                    for (int feature = 0; feature < trainData.get(0).length; feature++){ /// For each feature in training data
+                        distances[cl] += (float) Math.pow((member[feature] - clusters[cl].prototype[feature]), 2);
+                    }
+                    distances[cl] = (float) Math.sqrt(distances[cl]);
+                }
+                
+                /// Find smallest distance
+                System.err.println("TODO::: generateNewPartitioning() still needs further implementation!");
+                
+                /// Add member to cluster with smallest distance between member and cluster's centroid
+                System.err.println("TODO::: generateNewPartitioning() still needs further implementation!");
+                
+            }
+        }
+        
+        
+        private void computePrototype(Cluster cl){
+            System.err.println("Computing prototype...");
+            float[] average = null;
+            if (cl.currentMembers.size() != 0){
+                average = new float[trainData.get(0).length];
+                Arrays.fill(average, 0f);
+                System.err.println("Arrayinitialized to have " + trainData.get(0).length + " spaces.");
+            }
+            
+            //int i = 0; i < cl.currentMembers.size(); i++
+            for (Integer idx : cl.currentMembers){ /// Iterate through all clients of the cluster
+                for (int feature = 0; feature < trainData.get(0).length; feature++){ /// Iterate through all features per client
+                    average[feature]  += ((float) trainData.get(idx.intValue())[feature] ); /// "/ (float) cl.currentMembers.size()" lead to rounding errors
+                }
+            }
+            for (int i = 0; i < average.length; i++){
+                average[i] = average[i] / (float) cl.currentMembers.size();
+            }
+            cl.prototype = average;
+        }
+        
+        private void computePrototypes(){
+            /// For each cluster, compute prototype
+            for (int i = 0; i < clusters.length; i++)
+                computePrototype(clusters[i]);
+        }
+        
+        private void initialPartitioning(){
+            Random rn = new Random();
+            int idx = 0;
+            System.err.println("k: " + k);
+            
+            /// Random partitionng
+            for (int i = 0; i < trainData.size(); i++){ /// Assign every client to a cluster
+                idx = rn.nextInt(k); /// Get random index for a cluster
+                clusters[idx].currentMembers.add(new Integer(i)); /// Add index of current client to randomly picked cluster
+            }
+            
+            /// Print
+            System.err.println("Cluster sizes:");
+            for (int i = 0; i < clusters.length; i++)
+                System.out.println(i + ": " + clusters[i].currentMembers.size());
+            
+            /// Compute initial prototypes
+            computePrototypes();
+            
+            /// Print
+            System.err.println("Prototypes:");
+            for (int i = 0; i < clusters.length; i++){
+                System.out.println("Cluster: " + i + " prototype: ");
+                for (int ii = 0; ii < clusters[i].prototype.length; ii++)
+                    System.out.print(clusters[i].prototype[ii] + "  ");
+                System.out.println("\n");
+            }
+        }
+        
 	public boolean train()
 	{
-	 	//implement k-means algorithm here:
-		// Step 1: Select an initial random partioning with k clusters
-		// Step 2: Generate a new partition by assigning each datapoint to its closest cluster center
+            /// Get overview over data
+            for (int i = 0; i < trainData.size(); i++){
+                System.out.println(i + ": " + (float[]) trainData.get(i) + "Size: " + ((float[]) trainData.get(i)).length);
+                float[] featureVector = (float[]) trainData.get(i);
+                for (int ii = 0; ii < featureVector.length; ii++){
+                    System.out.print((float) featureVector[ii] + " ");
+                }
+                System.out.println("\n");
+            }
+            
+            //implement k-means algorithm here:
+            // Step 1: Select an initial random partioning with k clusters
+            initialPartitioning();
+            
+            while (differenceDetected()){
+                // Step 2: Generate a new partition by assigning each datapoint to its closest cluster center
+                generateNewPartitioning();
+                
 		// Step 3: recalculate cluster centers
+                computePrototypes();
+                
 		// Step 4: repeat until clustermembership stabilizes
+            }
+		
 		return false;
 	}
 

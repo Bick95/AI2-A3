@@ -36,7 +36,6 @@ public class RunClustering
                     args[2] = "/home/daniel/Uni/ThirdYear/AI2/A3/Data/webuser-clustering/requests.dat";
                     args[3] = "/home/daniel/Uni/ThirdYear/AI2/A3/Data/webuser-clustering/clients.dat";
                     readData(args[0],args[1],args[2],args[3]);
-                    System.out.println("Daniels.");
                 } else {
 			System.out.println("No files where defined (java runClustering [traindata, testdata, requests, clients]), using defaults");
 			readData();
