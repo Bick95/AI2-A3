@@ -99,7 +99,7 @@ public class KMeans extends ClusteringAlgorithm
                 }
                 /// Add member to cluster with smallest distance between member and cluster's centroid
                 sumDistances += bestDistance;
-                if(clusterMembership[i] != bestCentroid){
+                if(clusterMembership[i] != bestCentroid){ /// If true, member of index i has changes cluster
                     stopCriterion = false;
                 }
                 clusterMembership[i] = bestCentroid;
