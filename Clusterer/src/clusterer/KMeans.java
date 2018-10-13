@@ -74,7 +74,6 @@ public class KMeans extends ClusteringAlgorithm
             int i = 0;
             stopCriterion = true; /// Keep only going on if there is some change(s)
             float sumDistances = 0;
-            System.out.println("traindata length is " + trainData.size());
             
             for (float[] member : trainData){
                 
@@ -105,22 +104,18 @@ public class KMeans extends ClusteringAlgorithm
                 clusterMembership[i] = bestCentroid;
                 clusters[bestCentroid].currentMembers.add(i++);
             }
-            System.out.println("sum distance is " + sumDistances + " and i: " + i);
         }
         
         
         private void computePrototype(Cluster cl){
-            System.out.println("Computing prototype...");
-            
             float[] average = new float[dim];
             Arrays.fill(average, 0f);
             
-            System.out.println("Array initialized to have " + dim + " spaces.");
-
+            
             for (Integer idx : cl.currentMembers){ /// Iterate through all clients of the cluster
                 
                 for (int feature = 0; feature < dim; feature++){ /// Iterate through all features per client
-                    average[feature]  += ( (float) trainData.get(idx.intValue())[feature] ); /// "/ (float) cl.currentMembers.size()" lead to rounding errors
+                    average[feature]  += ( (float) trainData.get(idx.intValue())[feature] ); /// "/ (float) cl.currentMembers.size()" added to this line lead to rounding errors
                 }
                 
             }
@@ -151,15 +146,9 @@ public class KMeans extends ClusteringAlgorithm
                 clusterMembership[i] = idx;
             }
             
-            /// Printing...
-            showMembers();
-                
             /// Compute initial prototypes
             computePrototypes();
-            
-            /// Print
-            //System.err.println("Prototypes:");
-            //showPrototypes();
+
         }
         
 	public boolean train()
@@ -206,7 +195,7 @@ public class KMeans extends ClusteringAlgorithm
                     
                 }
             }
-            System.out.println("ctrRequests: " + ctrRequests + " ctrHits: " + ctrHits + " ctrPrefetched: " + ctrPrefetched);
+            
             // set the global variables hitrate and accuracy to their appropriate value
             this.hitrate = (double) ((double) ctrHits / (double) ctrRequests);
             this.accuracy = (double) ((double) ctrHits / (double) ctrPrefetched);

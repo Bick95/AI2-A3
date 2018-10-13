@@ -63,9 +63,9 @@ public class Kohonen extends ClusteringAlgorithm
 			for (int i2 = 0; i2 < n; i2++) {
 				clusters[i][i2] = new Cluster();
 				clusters[i][i2].prototype = randomInit();
-                                for (float flt : clusters[i][i2].prototype)
+                                /*for (float flt : clusters[i][i2].prototype)
                                     System.out.print(flt + " ");
-                                System.out.println();
+                                System.out.println();*/
 			}
 		}
 	}
