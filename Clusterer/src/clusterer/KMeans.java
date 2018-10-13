@@ -200,7 +200,10 @@ public class KMeans extends ClusteringAlgorithm
                         }
                         ctrPrefetched++;    // and count prefetched htmls
                     }
-                    ctrRequests++;          // count number of requests
+                    if (requested){     /// A website is prefetched AND requested by the user
+                        ctrRequests++;          // count number of requests
+                    }
+                    
                 }
             }
             System.out.println("ctrRequests: " + ctrRequests + " ctrHits: " + ctrHits + " ctrPrefetched: " + ctrPrefetched);
