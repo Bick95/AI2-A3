@@ -13,19 +13,22 @@ import java.util.Vector;
  *
  * @author daniel
  */
-public class ParameterSweeper {
+public class GridSearcher {
     
     private int algoID;
     public Sweeper sweeper;
 
-    public ParameterSweeper(Vector<float[]> trainData, Vector<float[]> testData, int dim){
+    public GridSearcher(Vector<float[]> trainData, Vector<float[]> testData, int dim){
         readAlgoID();
         switch (algoID){
             case 1:
                 sweeper = new KMeansSweeper(trainData, testData, dim);
                 break;
+            case 3:
+                sweeper = new KohonenSweeper(trainData, testData, dim);
+                break;
             default:
-                System.out.println("not implemented yet");
+                System.out.println("No sweeping available for this input");
 
         }
 

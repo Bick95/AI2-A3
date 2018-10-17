@@ -150,8 +150,8 @@ public class RunClustering
 	 }
 	
         public static void paramSweepInit(){
-            ParameterSweeper parameterSweeper = new ParameterSweeper(trainData, testData, dim);
-            parameterSweeper.runParameterSweeping();
+            GridSearcher gs = new GridSearcher(trainData, testData, dim);
+            gs.runParameterSweeping();
         }
         
 	public static void kmeansInit()
