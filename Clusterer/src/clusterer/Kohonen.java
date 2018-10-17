@@ -58,14 +58,10 @@ public class Kohonen extends ClusteringAlgorithm
 
 		// Here n*n new cluster are initialized
 		clusters = new Cluster[n][n];
-                System.out.println("Prototypes:");
-		for (int i = 0; i < n; i++)  {
+                for (int i = 0; i < n; i++)  {
 			for (int i2 = 0; i2 < n; i2++) {
 				clusters[i][i2] = new Cluster();
 				clusters[i][i2].prototype = randomInit();
-                                /*for (float flt : clusters[i][i2].prototype)
-                                    System.out.print(flt + " ");
-                                System.out.println();*/
 			}
 		}
 	}
@@ -93,11 +89,6 @@ public class Kohonen extends ClusteringAlgorithm
                 System.out.print(" ");
             }
             System.out.print("|");
-            /*try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException ex) {
-                System.err.println("Error.");
-            }*/
         }
         
         private void computeMemberships(){
@@ -281,5 +272,13 @@ public class Kohonen extends ClusteringAlgorithm
 	{
 		this.prefetchThreshold = prefetchThreshold;
 	}
+        
+    public double getHitrate() {
+        return hitrate;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
 }
 

@@ -112,4 +112,12 @@ public class LeaderFollower extends ClusteringAlgorithm
 	{
 		this.prefetchThreshold = prefetchThreshold;
 	}
+        
+    public double getHitrate() {
+        return hitrate;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
 }

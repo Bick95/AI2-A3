@@ -59,26 +59,29 @@ public class RunClustering
 		while (true) {
 			if (startUp) {
 				 // Ask for algoritm ans its apropriate parameters. Algorithm gets copies of the datavectors (fail-prove)
-				initializeAlgorithm();
+				if (initializeAlgorithm()){
 
-				// Training
-				System.out.print("Perform the actual training! (hit enter)"); 
-				// You wait for authorisation because in real applications,training and or testing may take days.
-				waitForAuthorisation();   
-				System.out.println("Training ...");
-				ca.train();
-				System.out.println("Training finished.");
-				
-				// Testing
-				System.out.print("Perform the testing! (hit enter)");  
-				waitForAuthorisation();                     
-				System.out.println("Testing...");
-				ca.test();
-				System.out.println("Testing finished.");
-			}
+                                    // Training
+                                    System.out.print("Perform the actual training! (hit enter)"); 
+                                    // You wait for authorisation because in real applications,training and or testing may take days.
+                                    waitForAuthorisation();   
+                                    System.out.println("Training ...");
+                                    ca.train();
+                                    System.out.println("Training finished.");
+
+                                    // Testing
+                                    System.out.print("Perform the testing! (hit enter)");  
+                                    waitForAuthorisation();                     
+                                    System.out.println("Testing...");
+                                    ca.test();
+                                    System.out.println("Testing finished.");
+                                
+                                    // Show of results
+                                    startUp = showResult(); // ask what information should be shown. (Or train another algorithm)
+                                }
 			
-			// Show of results
-			startUp = showResult(); // ask what information should be shown. (Or train another algorithm)
+                        }
+			
 		}
 	}
 	
@@ -86,7 +89,7 @@ public class RunClustering
 	{
 		int algID=4;
 		while (true) {
-			System.out.print("Run K-means (1), Leader-Follower(2), Kohonen SOM (3) or Quit(4) ? ");
+			System.out.print("Run K-means (1), Leader-Follower(2), Kohonen SOM (3), Quit(4) or Parameter sweeping (5) ? ");
 			String line="";
 			try {
 				if ((line = in.readLine()) == null)
@@ -94,7 +97,7 @@ public class RunClustering
 				
 				algID = (new Integer(line)).intValue();
 				
-				if ((algID > 0) && (algID < 5))
+				if ((algID > 0) && (algID < 6))
 					break;
 			}
 			catch (Exception e) {
@@ -124,7 +127,7 @@ public class RunClustering
 		return resultID;
 	}
 	
-	public static void initializeAlgorithm()
+	public static boolean initializeAlgorithm()
 	{
 		// determine which algorithm is requested (chooseAlgorithm), and ask for corresponding parameters
 		switch (chooseAlgorithm()) {
@@ -139,9 +142,18 @@ public class RunClustering
 				break;
 			case 4:
 				System.exit(0);
+                        case 5:
+                                paramSweepInit();
+                                return false;
 		}
+                return true;
 	 }
 	
+        public static void paramSweepInit(){
+            ParameterSweeper sweeper = new ParameterSweeper(trainData, testData, dim);  
+            sweeper.test();
+        }
+        
 	public static void kmeansInit()
 	{
 		int k = 0;

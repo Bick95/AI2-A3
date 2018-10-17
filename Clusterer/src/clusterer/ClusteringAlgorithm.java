@@ -13,4 +13,8 @@ public abstract class ClusteringAlgorithm
 	public abstract void showMembers();
 	
 	public abstract void showPrototypes();
+        
+        public abstract double getAccuracy();
+        
+        public abstract double getHitrate();
 }

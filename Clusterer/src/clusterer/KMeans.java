@@ -64,6 +64,23 @@ public class KMeans extends ClusteringAlgorithm
 		for (int ic = 0; ic < k; ic++)
 			clusters[ic] = new Cluster();
 	}
+	
+        public KMeans(int k, Vector<float[]> trainData, Vector<float[]> testData, int dim, double pft)
+	{
+		this.k = k;
+		this.trainData = trainData;
+		this.testData = testData; 
+		this.dim = dim;
+		this.prefetchThreshold = pft;
+
+		stopCriterion = false;
+		clusterMembership = new int[trainData.size()]; /// Contains cluster-indx if which a client was member i previous round
+                
+		// Here k new cluster are initialized
+		clusters = new Cluster[k];
+		for (int ic = 0; ic < k; ic++)
+			clusters[ic] = new Cluster();
+	}
         
         private void generateNewPartitioning(){
             for (Cluster cl : clusters){ /// Update previous members and prepare for new set of current members
@@ -237,4 +254,12 @@ public class KMeans extends ClusteringAlgorithm
 	{
 		this.prefetchThreshold = prefetchThreshold;
 	}
+
+    public double getHitrate() {
+        return hitrate;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
 }
