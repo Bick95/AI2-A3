@@ -39,14 +39,13 @@ public class KMeansSweeper extends Sweeper {
     public void test(){
         for (int k = minMaxK[0]; k <= minMaxK[1]; k++){
 
-            int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])); /// Compute nr of thresholds
+            int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])) + 1; /// Compute nr of thresholds
 
             for (int idx = 0; idx < ths; idx++){ /// For each threshold value
 
                 double threshold = minMaxPFT[0] + minMaxPFT[2]*(double)idx;
                 double acc = 0;
                 double hr = 0;
-
 
                 for (int i = 0; i < iterations; i++){
                     ca = new KMeans(k, new Vector<float[]>(trainData), new Vector<float[]>(testData), dim, threshold);
@@ -69,7 +68,7 @@ public class KMeansSweeper extends Sweeper {
     @Override
     public void printResults(){
         System.out.println("Accuracy and Hitrate are as follows in the KMeans algorithm when varying k between " + minMaxK[0] + " and " + minMaxK[1] + " and running " + iterations + " repetitions.");
-        int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])); /// Compute nr of thresholds
+        int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])) + 1; /// Compute nr of thresholds
         for (int i = 0; i < ths; i++){
             double threshold = minMaxPFT[0] + minMaxPFT[2]*(double)i;
             System.out.println();

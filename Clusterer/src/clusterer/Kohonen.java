@@ -4,6 +4,10 @@ import java.util.*;
 
 public class Kohonen extends ClusteringAlgorithm
 {
+    
+        /// Progress bar on/off: on for running algo, off for parameter sweeping
+        boolean progressbar;
+    
 	// Size of clustersmap
 	private int n;
 
@@ -53,7 +57,33 @@ public class Kohonen extends ClusteringAlgorithm
 		this.testData = testData; 
 		this.dim = dim;        /// Dim of input vectors
                 this.groupBelonging = new Vector<int[]>();
-		
+		this.progressbar = true;
+                
+		Random rnd = new Random();
+
+		// Here n*n new cluster are initialized
+		clusters = new Cluster[n][n];
+                for (int i = 0; i < n; i++)  {
+			for (int i2 = 0; i2 < n; i2++) {
+				clusters[i][i2] = new Cluster();
+				clusters[i][i2].prototype = randomInit();
+			}
+		}
+	}
+	
+        /// Constructor used for parameter sweeping
+        public Kohonen(int n, int epochs, Vector<float[]> trainData, Vector<float[]> testData, int dim, double threshold)
+	{
+		this.n = n;             /// NxN map
+		this.epochs = epochs;
+		prefetchThreshold = threshold;
+		initialLearningRate = 0.8;
+		this.trainData = trainData;
+		this.testData = testData; 
+		this.dim = dim;        /// Dim of input vectors
+                this.groupBelonging = new Vector<int[]>();
+		this.progressbar = false;
+                
 		Random rnd = new Random();
 
 		// Here n*n new cluster are initialized
@@ -74,7 +104,8 @@ public class Kohonen extends ClusteringAlgorithm
                 flt[i] = (float) (min + Math.random() * (max - min)); /// Min and Max value to prevent prototypes from being too far off the data set
             return flt;
         }
-	private void printProgressBar(int t){
+	
+        private void printProgressBar(int t){
             /// Uncomment following to see development of progress bar
             //System.err.println("Epoch: " + t);
                 
@@ -139,7 +170,8 @@ public class Kohonen extends ClusteringAlgorithm
             
             for (int t = 0; t < epochs; t++){   // Repeat 'epochs' times:
                 // Since training kohonen maps can take quite a while, presenting the user with a progress bar would be nice
-                printProgressBar(t);
+                if (progressbar)
+                    printProgressBar(t);
                 
                 // Step 2: Calculate the squareSize and the learningRate, these decrease lineary with the number of epochs.
                 learningRate = (double) initialLearningRate * ((double) 1 - ((double) t / (double) epochs));
@@ -194,7 +226,8 @@ public class Kohonen extends ClusteringAlgorithm
                 
             }
             computeMemberships();
-            System.out.println();
+            if (progressbar)
+                System.out.println();
             return true;
 	}
 	

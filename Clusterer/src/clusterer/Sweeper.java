@@ -35,10 +35,10 @@ public class Sweeper {
         System.out.println("Prefetch threshold range:");
         double[] minMax = new double[3];
 
-        System.out.print("From:\t");
+        System.out.print("From:\t\t");
         minMax[0] = returnDouble();
 
-        System.out.print("To:\t");
+        System.out.print("To:\t\t");
         minMax[1] = returnDouble();
 
         System.out.print("Step size:\t");
