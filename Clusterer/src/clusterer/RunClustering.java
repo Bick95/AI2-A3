@@ -25,7 +25,6 @@ public class RunClustering
 	// ***** Main *****
 	public static void main(String[] args)
 	{
-			
 		// Read data from files
 		if (args.length==4) {  //use user defined file names
 			readData(args[0],args[1],args[2],args[3]);

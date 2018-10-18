@@ -110,6 +110,7 @@ public class KohonenSweeper extends Sweeper{
         }
         System.out.println();
         System.out.println();
+        //ResultExporter(accuracy, hitrate, minMaxK,thresholds)
     }
 
     private void readMinMaxN(){

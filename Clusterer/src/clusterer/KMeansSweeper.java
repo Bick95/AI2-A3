@@ -31,7 +31,6 @@ public class KMeansSweeper extends Sweeper {
         int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])); /// Compute nr of thresholds
         accuracy = new double[minMaxK[1]+1][ths+1];
         hitrate = new double[minMaxK[1]+1][ths+1];
-        System.out.println("ths: " + (ths+1));
 
     }
 
@@ -80,5 +79,6 @@ public class KMeansSweeper extends Sweeper {
                 System.out.println(k + "\t" + accuracy[k][i] + "\t" + hitrate[k][i] + "\t" + (accuracy[k][i]+hitrate[k][i]));
             }
         }
+        new ResultExporter(accuracy, hitrate, minMaxK, minMaxPFT);
     }
 }
