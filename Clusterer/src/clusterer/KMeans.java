@@ -21,8 +21,11 @@ public class KMeans extends ClusteringAlgorithm
 
     //stopping criterion (in case the partitioning did not change
     private Boolean stopCriterion;
-	
-	// This class represents the clusters, it contains the prototype (the mean of all it's members)
+
+
+
+
+    // This class represents the clusters, it contains the prototype (the mean of all it's members)
 	// and memberlists with the ID's (which are Integer objects) of the datapoints that are member of that cluster.
 	// You also want to remember the previous members so you can check if the clusters are stable.
 	static class Cluster

@@ -1,5 +1,9 @@
 package clusterer;
 
+import javax.swing.*;
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
 
 import static clusterer.RunClustering.in;
@@ -74,9 +78,27 @@ public class Sweeper {
         return k;
     }
 
+    public String getFileName(){
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
+        return "SaveFile_"  + "_" + timeStamp + ".csv";
+    }
+
+    public String getPath(){
+        String separator = java.nio.file.FileSystems.getDefault().getSeparator();
+        JFileChooser chooser = new JFileChooser(new File("").getAbsolutePath());
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            System.out.println("You chose to open this file: " +
+                    chooser.getSelectedFile().getPath());
+        }
+        return chooser.getSelectedFile().getPath() + separator + getFileName();
+    }
+
     public void init(){}
     public void test(){}
     public void train(){}
     public void printResults(){}
     public void askSpecificParameters(){}
+    public void saveResults(){}
 }

@@ -1,7 +1,14 @@
 package clusterer;
 
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class KMeansSweeper extends Sweeper {
 
@@ -79,6 +86,69 @@ public class KMeansSweeper extends Sweeper {
                 System.out.println((k + minMaxK[0]) + "\t" + accuracy[k][i] + "\t" + hitrate[k][i] + "\t" + (accuracy[k][i]+hitrate[k][i]));
             }
         }
-        new ResultExporter(accuracy, hitrate, minMaxK, minMaxPFT);
     }
+    @Override
+    public void saveResults(){
+        System.out.println("starting the saveresults");
+        File output = new File(getPath());
+        try {
+            output.createNewFile();                  // Create file if necessary
+        } catch (IOException ex) {
+            Logger.getLogger("Kmeans sweeping save results file creation error").log(Level.SEVERE, null, ex);
+        }
+
+        int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])) + 1; /// Compute nr of thresholds
+
+        try {
+            PrintWriter writer = new PrintWriter(output);
+
+            /// Store meta-data
+            writer.print("Thresholds");
+            for (int i = 0; i < ths; i++){
+                writer.print(";" + (minMaxPFT[0] + minMaxPFT[2]*(double)i));
+            }
+
+            writer.println();
+            writer.print("k");
+            for (int i = minMaxK[0]; i <= minMaxK[1]; i++){
+                writer.print(";" + i);
+            }
+
+            /// Store actual data
+            /// Accuracy
+            writer.println();
+            writer.println("Accuracy[row: k][column: threshold];...");
+            for (int k = 0; k <= minMaxK[1] - minMaxK[0]; k++){
+                writer.print((k + minMaxK[0]));
+                for (int idx = 0; idx < ths; idx++){ /// For each threshold value
+                    writer.print(";" + accuracy[k][idx]);
+                }
+                writer.println();
+            }
+
+            /// Hitrate
+            writer.println();
+            writer.println("Hitrate[row: k][column: threshold];...");
+            for (int k = 0; k <= minMaxK[1] - minMaxK[0]; k++){
+                writer.print((k + minMaxK[0]));
+                for (int idx = 0; idx < ths; idx++){ /// For each threshold value
+                    writer.print(";" + hitrate[k][idx]);
+                }
+                writer.println();
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            System.out.println("Error when saving to file! " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String getFileName(){
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
+        return "SaveFile_Kmeans"  + "_" + timeStamp + ".csv";
+    }
+
 }
+

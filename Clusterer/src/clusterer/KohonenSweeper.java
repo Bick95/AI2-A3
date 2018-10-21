@@ -1,6 +1,13 @@
 package clusterer;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Vector;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import static clusterer.RunClustering.in;
 
@@ -21,7 +28,7 @@ public class KohonenSweeper extends Sweeper{
     @Override
     public void askSpecificParameters(){
         minMaxN = new int[2];
-        readMinMaxN();
+        readminMaxN();
         minMaxEpochs = new int [3];
         readMinMaxEpochs();
     }
@@ -110,10 +117,91 @@ public class KohonenSweeper extends Sweeper{
         }
         System.out.println();
         System.out.println();
-        //ResultExporter(accuracy, hitrate, minMaxK,thresholds)
     }
 
-    private void readMinMaxN(){
+    @Override
+    public void saveResults(){
+        File output = new File(getPath());
+        try {
+            output.createNewFile();                  // Create file if necessary
+        } catch (IOException ex) {
+            Logger.getLogger("Kohonen sweeping save results error").log(Level.SEVERE, null, ex);
+        }
+
+        int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])) + 1; /// Compute nr of thresholds
+
+        try {
+            PrintWriter writer = new PrintWriter(output);
+
+            /// Store meta-data
+            writer.print("Thresholds");
+            for (int i = 0; i < ths; i++){
+                writer.print(";" + (minMaxPFT[0] + minMaxPFT[2]*(double)i));
+            }
+
+            writer.println();
+            writer.print("n");
+            for (int i = minMaxN[0]; i <= minMaxN[1]; i++){
+                writer.print(";" + i);
+            }
+
+            writer.println();
+            writer.print("epochs");
+            for (int i = minMaxEpochs[0]; i <= minMaxEpochs[1]; i+=minMaxEpochs[2]){
+                writer.print(";" + i);
+            }
+
+            /// Store actual data
+            /// Accuracy
+            writer.println();
+
+            for (int k = 0; k <= minMaxN[1] - minMaxN[0]; k++){
+                writer.println("Accuracy for N=" + (k + minMaxN[0]) + "...");
+                writer.println("Accuracy[row: threshold][column: learning epoch number];...");
+                for (int idx = 0; idx < ths; idx++){ /// For each threshold value
+                    writer.print((minMaxPFT[idx]));
+                    int epochIndex = 0;
+                    for (int epoch = minMaxEpochs[0]; epoch<=minMaxEpochs[1]; epoch+=minMaxEpochs[2] ) {
+                        writer.print(";" + accuracy[k][idx][epochIndex]);
+                        epochIndex++;
+                    }
+                    writer.print("\n");
+                }
+                writer.println();
+            }
+
+            /// Hitrate
+            writer.println("----------------Hitrates--------------------");
+            for (int k = 0; k <= minMaxN[1] - minMaxN[0]; k++){
+
+                writer.println("Hitrate for N=" + (k + minMaxN[0]) + "...");
+                writer.println("Hitrate[row: threshold][column: learning epoch number];...");
+                for (int idx = 0; idx < ths; idx++){ /// For each threshold value
+                    int epochIndex = 0;
+                    for (int epoch = minMaxEpochs[0]; epoch<=minMaxEpochs[1]; epoch+=minMaxEpochs[2] ){
+                        writer.print(";" + hitrate[k][idx][epochIndex]);
+                        epochIndex++;
+                    }
+                    writer.print("\n");
+                }
+                writer.println();
+            }
+
+            writer.flush();
+            writer.close();
+        } catch (Exception e) {
+            System.out.println("Error when saving to file! " + e.getMessage());
+        }
+        
+    }
+
+    @Override
+    public String getFileName(){
+        String timeStamp = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss").format(Calendar.getInstance().getTime());
+        return "SaveFile_Kohonen"  + "_" + timeStamp + ".csv";
+    }
+
+    private void readminMaxN(){
         //prompt for n
         System.out.println("Define minimum and maximum map size");
         while (true) {

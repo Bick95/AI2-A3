@@ -39,6 +39,7 @@ public class GridSearcher {
         this.sweeper.init();
         this.sweeper.test();
         this.sweeper.printResults();
+        this.sweeper.saveResults();
     }
     
     private void readAlgoID(){
