@@ -27,16 +27,16 @@ public class KMeansSweeper extends Sweeper {
 
     @Override
     public void init(){
-        System.out.println("... " + ((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2]));
         int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])); /// Compute nr of thresholds
-        accuracy = new double[minMaxK[1]+1][ths+1];
-        hitrate = new double[minMaxK[1]+1][ths+1];
+        int ks = minMaxK[1] - minMaxK[0] + 1;
+        accuracy = new double[ks][ths+1];
+        hitrate = new double[ks][ths+1];
 
     }
 
     @Override
     public void test(){
-        for (int k = minMaxK[0]; k <= minMaxK[1]; k++){
+        for (int k = 0; k <= minMaxK[1] - minMaxK[0]; k++){
 
             int ths = (int) Math.round(((minMaxPFT[1]-minMaxPFT[0])/minMaxPFT[2])) + 1; /// Compute nr of thresholds
 
@@ -47,7 +47,7 @@ public class KMeansSweeper extends Sweeper {
                 double hr = 0;
 
                 for (int i = 0; i < iterations; i++){
-                    ca = new KMeans(k, new Vector<float[]>(trainData), new Vector<float[]>(testData), dim, threshold);
+                    ca = new KMeans(k+minMaxK[0], new Vector<float[]>(trainData), new Vector<float[]>(testData), dim, threshold);
                     /// Run and evaluate algorithm
                     ca.train();
                     ca.test();
@@ -75,8 +75,8 @@ public class KMeansSweeper extends Sweeper {
             System.out.println();
             System.out.println("k\tAccuracy:\t\tHitrate:\t\tcombined:\t");
 
-            for (int k = minMaxK[0]; k <= minMaxK[1]; k++){
-                System.out.println(k + "\t" + accuracy[k][i] + "\t" + hitrate[k][i] + "\t" + (accuracy[k][i]+hitrate[k][i]));
+            for (int k = 0; k <= minMaxK[1] - minMaxK[0]; k++){
+                System.out.println((k + minMaxK[0]) + "\t" + accuracy[k][i] + "\t" + hitrate[k][i] + "\t" + (accuracy[k][i]+hitrate[k][i]));
             }
         }
         new ResultExporter(accuracy, hitrate, minMaxK, minMaxPFT);
