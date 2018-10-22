@@ -53,33 +53,34 @@ public class RunClustering
 		// Prepare to read from command line
 		in = new BufferedReader(new InputStreamReader(System.in));
 		
-		// Start interacting with the user
-		boolean startUp = true;
+		
 		while (true) {
-			if (startUp) {
-				 // Ask for algoritm ans its apropriate parameters. Algorithm gets copies of the datavectors (fail-prove)
-				if (initializeAlgorithm()){
+                    // Ask for algoritm ans its apropriate parameters. Algorithm gets copies of the datavectors (fail-prove)
+                    if (initializeAlgorithm()){ /// Only interact with user in usual way if choice is not parameter sweeping, otherwise choose other mode
+                        
+                        // Training
+                        System.out.print("Perform the actual training! (hit enter)"); 
+                        // You wait for authorisation because in real applications,training and or testing may take days.
+                        waitForAuthorisation();   
+                        System.out.println("Training ...");
+                        ca.train();
+                        System.out.println("Training finished.");
 
-                                    // Training
-                                    System.out.print("Perform the actual training! (hit enter)"); 
-                                    // You wait for authorisation because in real applications,training and or testing may take days.
-                                    waitForAuthorisation();   
-                                    System.out.println("Training ...");
-                                    ca.train();
-                                    System.out.println("Training finished.");
+                        // Testing
+                        System.out.print("Perform the testing! (hit enter)");  
+                        waitForAuthorisation();                     
+                        System.out.println("Testing...");
+                        ca.test();
+                        System.out.println("Testing finished.");
 
-                                    // Testing
-                                    System.out.print("Perform the testing! (hit enter)");  
-                                    waitForAuthorisation();                     
-                                    System.out.println("Testing...");
-                                    ca.test();
-                                    System.out.println("Testing finished.");
-                                
-                                    // Show of results
-                                    startUp = showResult(); // ask what information should be shown. (Or train another algorithm)
-                                }
-			
+                        // Start interacting with the user
+                        boolean startUp = true;
+                        while (startUp) {
+                            // Show of results
+                            startUp = showResult(); // ask what information should be shown. (Or train another algorithm)
                         }
+			
+                    }
 			
 		}
 	}
@@ -225,7 +226,7 @@ public class RunClustering
 	
 	public static boolean showResult()
 	{
-		boolean ret_val=false;
+		boolean ret_val=true;
 		switch(chooseResult()){
 			case 1:
 				ca.showTest();
@@ -237,7 +238,7 @@ public class RunClustering
 				ca.showPrototypes();
 				break;
 			case 4:
-				ret_val = true;
+				ret_val = false;
 				break;
 			case 5:
 				try {
