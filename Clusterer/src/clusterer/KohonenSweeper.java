@@ -150,16 +150,16 @@ public class KohonenSweeper extends Sweeper{
             for (int i = minMaxEpochs[0]; i <= minMaxEpochs[1]; i+=minMaxEpochs[2]){
                 writer.print(";" + i);
             }
-
+            writer.println("\nAccuracy[row: threshold][column: learning epoch number];...");
             /// Store actual data
             /// Accuracy
             writer.println();
-
+            /*
             for (int k = 0; k <= minMaxN[1] - minMaxN[0]; k++){
                 writer.println("Accuracy for N=" + (k + minMaxN[0]) + "...");
                 writer.println("Accuracy[row: threshold][column: learning epoch number];...");
                 for (int idx = 0; idx < ths; idx++){ /// For each threshold value
-                    writer.print((minMaxPFT[idx]));
+                    writer.print(Double.toString(minMaxPFT[0] + minMaxPFT[2]*(double)idx));
                     int epochIndex = 0;
                     for (int epoch = minMaxEpochs[0]; epoch<=minMaxEpochs[1]; epoch+=minMaxEpochs[2] ) {
                         writer.print(";" + accuracy[k][idx][epochIndex]);
@@ -168,29 +168,44 @@ public class KohonenSweeper extends Sweeper{
                     writer.print("\n");
                 }
                 writer.println();
+            }*/
+            int epochIndex = 0;
+            writer.println("N");
+            for (int epoch = minMaxEpochs[0]; epoch<=minMaxEpochs[1]; epoch+=minMaxEpochs[2] ) {
+                writer.println("Accuracy for Epochs=" + epoch);
+                for (int k = 0; k <= minMaxN[1] - minMaxN[0]; k++){
+                    writer.print((minMaxN[0]+k));
+                    for (int idx = 0; idx < ths; idx++){ /// For each threshold value
+                        writer.print(";" + accuracy[k][idx][epochIndex]);
+                        
+                    }
+                    writer.println();
+                }
+                epochIndex++;
             }
 
             /// Hitrate
             writer.println("----------------Hitrates--------------------");
-            for (int k = 0; k <= minMaxN[1] - minMaxN[0]; k++){
-
-                writer.println("Hitrate for N=" + (k + minMaxN[0]) + "...");
-                writer.println("Hitrate[row: threshold][column: learning epoch number];...");
-                for (int idx = 0; idx < ths; idx++){ /// For each threshold value
-                    int epochIndex = 0;
-                    for (int epoch = minMaxEpochs[0]; epoch<=minMaxEpochs[1]; epoch+=minMaxEpochs[2] ){
+            epochIndex = 0;
+            writer.println("N");
+            for (int epoch = minMaxEpochs[0]; epoch<=minMaxEpochs[1]; epoch+=minMaxEpochs[2] ) {
+                writer.println("Accuracy for Epochs=" + epoch);
+                for (int k = 0; k <= minMaxN[1] - minMaxN[0]; k++){
+                    writer.print((minMaxN[0]+k));
+                    for (int idx = 0; idx < ths; idx++){ /// For each threshold value
                         writer.print(";" + hitrate[k][idx][epochIndex]);
-                        epochIndex++;
+                        
                     }
-                    writer.print("\n");
+                    writer.println();
                 }
-                writer.println();
+                epochIndex++;
             }
 
             writer.flush();
             writer.close();
         } catch (Exception e) {
             System.out.println("Error when saving to file! " + e.getMessage());
+            e.printStackTrace();
         }
         
     }
